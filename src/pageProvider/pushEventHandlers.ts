@@ -14,28 +14,7 @@ class PushEventHandlers {
     }
   }
 
-  // connect = (data) => {
-  //   if (!this.provider._isConnected) {
-  //     this.provider._isConnected = true;
-  //     this.provider._state.isConnected = true;
-  //     this._emit("connect", data);
-  //   }
-  // };
-
-  // unlock = () => {
-  //   this.provider._isUnlocked = true;
-  //   this.provider._state.isUnlocked = true;
-  // };
-
-  // lock = () => {
-  //   this.provider._isUnlocked = false;
-  // };
-
   disconnect = () => {
-    // this.provider._isConnected = false;
-    // this.provider._state.isConnected = false;
-    // this.provider._state.accounts = null;
-    // this.provider.selectedAddress = null;
     const disconnectError = ethErrors.provider.disconnected();
 
     this._emit("accountsChanged", []);
@@ -48,27 +27,8 @@ class PushEventHandlers {
   };
 
   chainChanged = ({ chain, networkVersion }) => {
-    // this.connect({ chainId: chain });
-
-    // if (chain !== this.provider.chainId) {
-    //   this.provider.chainId = chain;
     this._emit("chainChanged", chain);
-    // }
-
-    // if (networkVersion !== this.provider.networkVersion) {
-    //   this.provider.networkVersion = networkVersion;
-    //   this._emit("networkChanged", networkVersion);
-    // }
   };
-
-  // "rabby:chainChanged" = (chain) => {
-  //   if (
-  //     chain &&
-  //     chain.hex?.toLowerCase() !== this.provider.chainId?.toLowerCase()
-  //   ) {
-  //     this._emit("rabby:chainChanged", chain);
-  //   }
-  // };
 }
 
 export default PushEventHandlers;

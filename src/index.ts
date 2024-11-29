@@ -37,16 +37,6 @@ interface EIP6963ProviderInfo {
   rdns: string;
 }
 
-// interface EIP6963ProviderDetail {
-//   info: EIP6963ProviderInfo;
-//   provider: EthereumProvider;
-// }
-
-// interface EIP6963AnnounceProviderEvent extends CustomEvent {
-//   type: "eip6963:announceProvider";
-//   detail: EIP6963ProviderDetail;
-// }
-
 interface EIP6963RequestProviderEvent extends Event {
   type: "eip6963:requestProvider";
 }
@@ -69,20 +59,12 @@ const doTabCheckIn = (request: (data: any) => void) => {
 };
 
 export class EthereumProvider extends EventEmitter {
-  // chainId: string | null = null;
   selectedAddress: string | null = null;
-  /**
-   * The network ID of the currently connected Ethereum chain.
-   * @deprecated
-   */
-  // networkVersion: string | null = null;
   isHashPass = true;
   _isHashPass = true;
 
   _isReady = false;
-  // _isConnected = false;
   _initialized = false;
-  // _isUnlocked = false;
 
   _cacheRequestsBeforeReady: any[] = [];
   _cacheEventListenersBeforeReady: [string | symbol, () => any][] = [];
@@ -115,34 +97,7 @@ export class EthereumProvider extends EventEmitter {
       this._requestPromise.check(2);
     });
     this._initialized = true;
-    // this._state.initialized = true;
     this.emit("_initialized");
-
-    // try {
-    //   const { chainId, accounts, networkVersion, isUnlocked }: any =
-    //     await this.requestInternalMethods({
-    //       method: "getProviderState",
-    //     });
-    //   if (isUnlocked) {
-    //     this._isUnlocked = true;
-    //     this._state.isUnlocked = true;
-    //   }
-    //   this.chainId = chainId;
-    //   this.networkVersion = networkVersion;
-    //   this.emit("connect", { chainId });
-    //   this._pushEventHandlers.chainChanged({
-    //     chain: chainId,
-    //     networkVersion,
-    //   });
-
-    //   this._pushEventHandlers.accountsChanged(accounts);
-    // } catch {
-    //   //
-    // } finally {
-    //   this._initialized = true;
-    //   this._state.initialized = true;
-    //   this.emit("_initialized");
-    // }
   };
 
   private _requestPromiseCheckVisibility = () => {
@@ -165,8 +120,6 @@ export class EthereumProvider extends EventEmitter {
   isConnected = () => {
     return true;
   };
-
-  // TODO: support multi request!
   request = async (data) => {
     if (!this._isReady) {
       const promise = new Promise((resolve, reject) => {
@@ -210,11 +163,6 @@ export class EthereumProvider extends EventEmitter {
     });
   };
 
-  // requestInternalMethods = (data) => {
-  //   return this._dedupePromise.call(data.method, () => this._request(data));
-  // };
-
-  // shim to matamask legacy api
   sendAsync = (payload, callback) => {
     if (Array.isArray(payload)) {
       return Promise.all(
@@ -222,7 +170,6 @@ export class EthereumProvider extends EventEmitter {
           (item) =>
             new Promise((resolve) => {
               this.sendAsync(item, (err, res) => {
-                // ignore error
                 resolve(res);
               });
             })
@@ -237,7 +184,6 @@ export class EthereumProvider extends EventEmitter {
 
   send = (payload, callback?) => {
     if (typeof payload === "string" && (!callback || Array.isArray(callback))) {
-      // send(method, params? = [])
       return this.request({
         method: payload,
         params: callback,
@@ -319,35 +265,11 @@ const hashpassProvider = new Proxy(provider, {
   },
 });
 
-// const requestHasOtherProvider = () => {
-//   return provider.requestInternalMethods({
-//     method: "hasOtherProvider",
-//     params: [],
-//   });
-// };
-
-// const requestIsDefaultWallet = () => {
-//   return provider.requestInternalMethods({
-//     method: "isDefaultWallet",
-//     params: [],
-//   }) as Promise<boolean>;
-// };
-
 const initProvider = () => {
   hashpassProvider._isReady = true;
-  // hashpassProvider.on("defaultWalletChanged", switchWalletNotice);
   hashpassProvider.on("contentScriptConnected", () => {
     doTabCheckIn(hashpassProvider.request);
   });
-  // patchProvider(hashpassProvider);
-  // if (window.ethereum) {
-  //   requestHasOtherProvider();
-  // }
-  // if (!window.web3) {
-  //   window.web3 = {
-  //     currentProvider: hashpassProvider,
-  //   };
-  // }
   const descriptor = Object.getOwnPropertyDescriptor(window, "ethereum");
   const canDefine = !descriptor || descriptor.configurable;
   if (canDefine) {
@@ -358,15 +280,6 @@ const initProvider = () => {
           configurable: false,
           writable: false,
         },
-        // ethereum: {
-        //   get() {
-        //     return window.hashpassWalletRouter.currentProvider;
-        //   },
-        //   set(newProvider) {
-        //     window.hashpassWalletRouter.addProvider(newProvider);
-        //   },
-        //   configurable: false,
-        // },
         hashpassWalletRouter: {
           value: {
             hashpassProvider,
@@ -376,28 +289,11 @@ const initProvider = () => {
               hashpassProvider,
               ...(window.ethereum ? [window.ethereum] : []),
             ],
-            // setDefaultProvider(hashpassAsDefault: boolean) {
-            //   if (hashpassAsDefault) {
-            //     window.hashpassWalletRouter.currentProvider = window.hashpass;
-            //   } else {
-            //     const nonDefaultProvider =
-            //       window.hashpassWalletRouter.lastInjectedProvider ??
-            //       window.ethereum;
-            //     window.hashpassWalletRouter.currentProvider = nonDefaultProvider;
-            //   }
-            //   if (
-            //     hashpassAsDefault ||
-            //     !window.hashpassWalletRouter.lastInjectedProvider
-            //   ) {
-            //     hashpassProvider.on("hashpass:chainChanged", switchChainNotice);
-            //   }
-            // },
             addProvider(provider) {
               if (!window.hashpassWalletRouter.providers.includes(provider)) {
                 window.hashpassWalletRouter.providers.push(provider);
               }
               if (hashpassProvider !== provider) {
-                // requestHasOtherProvider();
                 window.hashpassWalletRouter.lastInjectedProvider = provider;
               }
             },
@@ -407,24 +303,15 @@ const initProvider = () => {
         },
       });
     } catch (e) {
-      // think that defineProperty failed means there is any other wallet
-      // requestHasOtherProvider();
       console.error(e);
-      // window.ethereum = hashpassProvider;
       window.hashpass = hashpassProvider;
     }
   } else {
-    // window.ethereum = hashpassProvider;
     window.hashpass = hashpassProvider;
   }
 };
 
 initProvider();
-
-
-// requestIsDefaultWallet().then((hashpassAsDefault) => {
-//   window.hashpassWalletRouter?.setDefaultProvider(hashpassAsDefault);
-// });
 
 const announceEip6963Provider = (provider: EthereumProvider) => {
   const info: EIP6963ProviderInfo = {

@@ -6,10 +6,6 @@ export interface Interceptor {
 }
 export declare class EthereumProvider extends EventEmitter {
     selectedAddress: string | null;
-    /**
-     * The network ID of the currently connected Ethereum chain.
-     * @deprecated
-     */
     isHashPass: boolean;
     _isHashPass: boolean;
     _isReady: boolean;
