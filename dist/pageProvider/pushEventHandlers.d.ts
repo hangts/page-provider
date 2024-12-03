@@ -5,9 +5,6 @@ declare class PushEventHandlers {
     _emit(event: any, data: any): void;
     disconnect: () => void;
     accountsChanged: (accounts: any) => void;
-    chainChanged: ({ chain, networkVersion }: {
-        chain: any;
-        networkVersion: any;
-    }) => void;
+    chainChanged: (chain: any) => void;
 }
 export default PushEventHandlers;

@@ -123,7 +123,7 @@ class PushEventHandlers {
         this.accountsChanged = (accounts) => {
             this._emit("accountsChanged", accounts);
         };
-        this.chainChanged = ({ chain, networkVersion }) => {
+        this.chainChanged = (chain) => {
             this._emit("chainChanged", chain);
         };
         this.provider = provider;
