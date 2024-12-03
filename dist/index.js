@@ -117,7 +117,7 @@ class PushEventHandlers {
         this.disconnect = () => {
             const disconnectError = ethRpcErrors.ethErrors.provider.disconnected();
             this._emit("accountsChanged", []);
-            this._emit("disconnect", disconnectError);
+            this._emit("disconnect", null);
             this._emit("close", disconnectError);
         };
         this.accountsChanged = (accounts) => {
