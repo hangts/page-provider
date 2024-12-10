@@ -316,7 +316,7 @@ initProvider();
 const announceEip6963Provider = (provider: EthereumProvider) => {
   const info: EIP6963ProviderInfo = {
     uuid: uuid,
-    name: "hashpass",
+    name: "HashPass",
     icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAAAXNSR0IArs4c6QAAASpJREFUWIXtmLFthDAUhs9JCkqP4A3sktJ0dLABlHSswAgwgdnk8ASYCeySzpR0lyYnXSSIMeEiTnlf+/R+f/KTnixfLgAA/DPe1wpCiCiKgiAYx3Ge50MOwxjHcVwURRiGXdf5NWutb3f6vhdCZFnGGPOVYIyVZSmEeAy8Xq++Od+EHtFab0zAGFtrF0N+EHrzFSWEbBfCGPvmews9GxByAUIuQMjF6YQ+dnemaZokyWKpaRql1F8LMcbyPF8sSSl3C51uZCDkAoRcgJCL/Xuobdu1h/ruJfQrIWOMMWZ3+xqnGxkIuQAhFyDk4vWFpml6jskXmza1uiOl3L6djTEIIc45pZRzTgjZ8puD1gpVVVlrh2FQSh11KxhjxhilFCFU1/UhmQAAvDyfrvqhwVTAsDoAAAAASUVORK5CYII=",
     rdns: "io.hashpass",
   };
